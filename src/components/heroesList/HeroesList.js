@@ -35,13 +35,28 @@ const HeroesList = () => {
     return <h5 className="text-center mt-5">Ошибка загрузки</h5>;
   }
 
+  const onDeleteHero = (id) => {
+    dispatch(heroesFetching());
+    request(`http://localhost:3001/heroes/${id}`, "DELETE")
+      .then(() => {
+        dispatch(heroesFetched(heroes.filter((h) => h.id !== id)));
+      })
+      .catch(() => dispatch(heroesFetchingError()));
+  };
+
   const renderHeroesList = (arr) => {
     if (arr.length === 0) {
       return <h5 className="text-center mt-5">Героев пока нет</h5>;
     }
 
     return arr.map(({ id, ...props }) => {
-      return <HeroesListItem key={id} {...props} />;
+      return (
+        <HeroesListItem
+          key={id}
+          {...props}
+          onDeleteHero={() => onDeleteHero(id)}
+        />
+      );
     });
   };
 
