@@ -10,10 +10,10 @@ import {
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from "../spinner/Spinner";
 
-// Задача для этого компонента:
-// При клике на "крестик" идет удаление персонажа из общего состояния
-// Усложненная задача:
-// Удаление идет и с json файла при помощи метода DELETE
+//// Задача для этого компонента:
+//// При клике на "крестик" идет удаление персонажа из общего состояния
+//// Усложненная задача:
+//// Удаление идет и с json файла при помощи метода DELETE
 
 const HeroesList = () => {
   const { heroes, heroesLoadingStatus } = useSelector((state) => state);
