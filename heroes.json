@@ -1,29 +1,50 @@
 {
-    "heroes": [
-        {
-            "id": 1,
-            "name": "Первый герой",
-            "description": "Первый герой в рейтинге!",
-            "element": "fire"
-        },
-        {
-            "id": 2,
-            "name": "Неизвестный герой",
-            "description": "Скрывающийся в тени",
-            "element": "wind"
-        },
-        {
-            "id": 3,
-            "name": "Морской герой",
-            "description": "Как аквамен, но не из DC",
-            "element": "water"
-        }
-    ],
-    "filters": [
-        "all",
-        "fire",
-        "water",
-        "wind",
-        "earth"
-    ]
+  "heroes": [
+    {
+      "id": 1,
+      "name": "Первый герой",
+      "description": "Первый герой в рейтинге!",
+      "element": "fire"
+    },
+    {
+      "id": 2,
+      "name": "Неизвестный герой",
+      "description": "Скрывающийся в тени",
+      "element": "wind"
+    },
+    {
+      "id": 3,
+      "name": "Морской герой",
+      "description": "Как аквамен, но не из DC",
+      "element": "water"
+    },
+    {
+      "name": "dsdadas",
+      "description": "rrrrr",
+      "element": "earth",
+      "id": 4
+    }
+  ],
+  "filters": [
+    {
+      "name": "fire",
+      "label": "Огонь",
+      "colorClass": "btn-danger"
+    },
+    {
+      "name": "water",
+      "label": "Вода",
+      "colorClass": "btn-primary"
+    },
+    {
+      "name": "wind",
+      "label": "Ветер",
+      "colorClass": "btn-success"
+    },
+    {
+      "name": "earth",
+      "label": "Земля",
+      "colorClass": "btn-secondary"
+    }
+  ]
 }
