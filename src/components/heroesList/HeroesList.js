@@ -15,6 +15,7 @@ const HeroesList = () => {
 	const {
 		heroesLoadingStatus,
 		filteredHeroes,
+		filters,
 	} = useSelector((state) => state)
 	const dispatch = useDispatch()
 	const { request } = useHttp()
@@ -48,11 +49,18 @@ const HeroesList = () => {
 		}
 
 		return arr
-			.map(({ id, ...props }) => {
+			.map(({ id, element, ...props }) => {
+				const elementInfo = filters.find(filter => filter.name === element)
+				let colorClass = 'bg-warning'
+				if (elementInfo) {
+					colorClass = elementInfo.colorClass
+				}
 				return (
 					<HeroesListItem
 						key={id}
 						{...props}
+						colorClass={colorClass}
+						element={element}
 						onDeleteHero={() => onDeleteHero(id)}
 					/>
 				)
