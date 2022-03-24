@@ -1,66 +1,60 @@
-// TODO Задача для этого компонента:
-// Фильтры должны формироваться на основании загруженных данных
-// Фильтры должны отображать только нужных героев при выборе
-// Активный фильтр имеет класс active
-// Изменять json-файл для удобства МОЖНО!
-// Представьте, что вы попросили бэкенд-разработчика об этом
-
-import classNames from 'classnames';
-import { useDispatch, useSelector } from 'react-redux';
-import { setFilter } from '../../actions';
+import classNames from 'classnames'
+import { useDispatch, useSelector } from 'react-redux'
+import { filtersFetched, filtersFetching, filtersFetchingError, setFilter } from '../../actions'
+import { useHttp } from '../../hooks/http.hook'
+import { useEffect } from 'react'
+import Spinner from '../spinner/Spinner'
 
 const HeroesFilters = () => {
-	const { filters } = useSelector((state) => state);
-	const dispatch = useDispatch();
+	const { activeFilter, filters, filtersLoadingStatus } = useSelector((state) => state)
+	const { request } = useHttp()
+	const dispatch = useDispatch()
+
+	useEffect(() => {
+		dispatch(filtersFetching())
+		request('http://localhost:3001/filters')
+			.then(filters => dispatch(filtersFetched(filters)))
+			.catch(() => dispatch(filtersFetchingError()))
+		// eslint-disable-next-line
+	}, [])
+
+	if (filtersLoadingStatus === 'loading') {
+		return <Spinner />
+	}
+	if (filtersLoadingStatus === 'error') {
+		return <h5 className='text-center mt-5'>Ошибка загрузки</h5>
+	}
+	const renderFilters = () => {
+		return filters.map(filter => (
+			<button
+				key={filter.name}
+				onClick={() => dispatch(setFilter(filter.name))}
+				className={`btn ${filter.colorClass} ${classNames({
+					active: activeFilter === filter.name,
+				})}`}
+			>
+				{filter.label}
+			</button>
+		))
+	}
 	return (
-		<div className="card shadow-lg mt-4">
-			<div className="card-body">
-				<p className="card-text">Отфильтруйте героев по элементам</p>
-				<div className="btn-group">
+		<div className='card shadow-lg mt-4'>
+			<div className='card-body'>
+				<p className='card-text'>Отфильтруйте героев по элементам</p>
+				<div className='btn-group'>
 					<button
-						onClick={() => dispatch(setFilter([]))}
+						onClick={() => dispatch(setFilter('all'))}
 						className={`btn btn-outline-dark ${classNames({
-							active: filters.length === 0,
+							active: activeFilter === 'all',
 						})}`}
 					>
 						Все
 					</button>
-					<button
-						onClick={() => dispatch(setFilter(['fire']))}
-						className={`btn btn-danger ${classNames({
-							active: filters.includes('fire'),
-						})}`}
-					>
-						Огонь
-					</button>
-					<button
-						onClick={() => dispatch(setFilter(['water']))}
-						className={`btn btn-primary ${classNames({
-							active: filters.includes('water'),
-						})}`}
-					>
-						Вода
-					</button>
-					<button
-						onClick={() => dispatch(setFilter(['wind']))}
-						className={`btn btn-success ${classNames({
-							active: filters.includes('wind'),
-						})}`}
-					>
-						Ветер
-					</button>
-					<button
-						onClick={() => dispatch(setFilter(['earth']))}
-						className={`btn btn-secondary ${classNames({
-							active: filters.includes('earth'),
-						})}`}
-					>
-						Земля
-					</button>
+					{renderFilters()}
 				</div>
 			</div>
 		</div>
-	);
-};
+	)
+}
 
-export default HeroesFilters;
+export default HeroesFilters
