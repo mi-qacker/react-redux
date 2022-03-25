@@ -10,13 +10,21 @@ import {
 } from '../../actions'
 import HeroesListItem from '../heroesListItem/HeroesListItem'
 import Spinner from '../spinner/Spinner'
+import { createSelector } from 'reselect'
 
 const HeroesList = () => {
-	const {
-		heroesLoadingStatus,
-		filteredHeroes,
-		filters,
-	} = useSelector((state) => state)
+	const filteredHeroesSelector = createSelector(
+		state => state.filters.activeFilter,
+		state => state.heroes.heroes,
+		(activeFilter, heroes) => {
+			if (activeFilter === 'all')
+				return heroes
+			return heroes.filter(hero => hero.element === activeFilter)
+		},
+	)
+	const filteredHeroes = useSelector(filteredHeroesSelector)
+	const { filters } = useSelector(state => state.filters)
+	const { heroesLoadingStatus } = useSelector(state => state.heroes)
 	const dispatch = useDispatch()
 	const { request } = useHttp()
 

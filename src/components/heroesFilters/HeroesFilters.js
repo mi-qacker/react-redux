@@ -6,7 +6,7 @@ import { useEffect } from 'react'
 import Spinner from '../spinner/Spinner'
 
 const HeroesFilters = () => {
-	const { activeFilter, filters, filtersLoadingStatus } = useSelector((state) => state)
+	const { activeFilter, filters, filtersLoadingStatus } = useSelector(state => state.filters)
 	const { request } = useHttp()
 	const dispatch = useDispatch()
 
