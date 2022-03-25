@@ -3,8 +3,7 @@ import { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import {
-	heroesFetching,
-	heroesFetched,
+	fetchHeroes,
 	heroesFetchingError,
 	heroDeleted,
 } from '../../actions'
@@ -29,15 +28,11 @@ const HeroesList = () => {
 	const { request } = useHttp()
 
 	useEffect(() => {
-		dispatch(heroesFetching())
-		request('http://localhost:3001/heroes')
-			.then((data) => dispatch(heroesFetched(data)))
-			.catch(() => dispatch(heroesFetchingError()))
+		dispatch(fetchHeroes(request))
 		// eslint-disable-next-line
 	}, [])
 
 	const onDeleteHero = useCallback((id) => {
-		dispatch(heroesFetching())
 		request(`http://localhost:3001/heroes/${id}`, 'DELETE')
 			.then(() => dispatch(heroDeleted(id)))
 			.catch(() => dispatch(heroesFetchingError()))
