@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useForm } from 'react-hook-form'
 import { useHttp } from '../../hooks/http.hook'
 import {
-	heroesFetching,
 	heroesFetchingError,
 	heroCreated,
 } from '../../actions'
@@ -18,7 +17,6 @@ const HeroesAddForm = () => {
 	} = useForm()
 
 	const onSubmit = (body) => {
-		dispatch(heroesFetching())
 		request('http://localhost:3001/heroes', 'POST', JSON.stringify(body))
 			.then((data) => dispatch(heroCreated(data)))
 			.catch(() => dispatch(heroesFetchingError()))
