@@ -1,9 +1,10 @@
 import classNames from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchFilters, setFilter } from '../../actions'
+import { fetchFilters } from '../../actions'
 import { useHttp } from '../../hooks/http.hook'
 import { useEffect } from 'react'
 import Spinner from '../spinner/Spinner'
+import { setFilter } from './filtersSlice'
 
 const HeroesFilters = () => {
 	const { activeFilter, filters, filtersLoadingStatus } = useSelector(state => state.filters)
