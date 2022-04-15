@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useForm } from 'react-hook-form'
 import { useHttp } from '../../hooks/http.hook'
-import { heroCreated, heroesFetchingError } from '../heroesList/heroesSlice'
+import { heroCreated } from '../heroesList/heroesSlice'
 
 const HeroesAddForm = () => {
 	const { filters } = useSelector(state => state.filters)
@@ -16,7 +16,6 @@ const HeroesAddForm = () => {
 	const onSubmit = (body) => {
 		request('http://localhost:3001/heroes', 'POST', JSON.stringify(body))
 			.then((data) => dispatch(heroCreated(data)))
-			.catch(() => dispatch(heroesFetchingError()))
 		resetField('name')
 		resetField('description')
 		resetField('element')
