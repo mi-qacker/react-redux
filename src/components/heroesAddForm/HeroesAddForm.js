@@ -2,9 +2,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useForm } from 'react-hook-form'
 import { useHttp } from '../../hooks/http.hook'
 import { heroCreated } from '../heroesList/heroesSlice'
+import { selectAll } from '../heroesFilters/filtersSlice'
+import store from '../../store'
 
 const HeroesAddForm = () => {
-	const { filters } = useSelector(state => state.filters)
+	const filters = selectAll(store.getState())
+	const { filtersLoadingStatus } = useSelector(state => state.filters)
+
 	const dispatch = useDispatch()
 	const { request } = useHttp()
 	const {
@@ -19,6 +23,12 @@ const HeroesAddForm = () => {
 		resetField('name')
 		resetField('description')
 		resetField('element')
+	}
+
+	if (filtersLoadingStatus === 'loading') {
+		return null
+	} else if (filtersLoadingStatus === 'error') {
+		return <h5 className='text-center mt-5'>Ошибка загрузки</h5>
 	}
 
 	const renderFilters = () => {

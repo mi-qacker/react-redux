@@ -1,20 +1,15 @@
 import classNames from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect } from 'react'
-import Spinner from '../spinner/Spinner'
-import { setFilter, fetchFilters } from './filtersSlice'
+import { setFilter, selectAll } from './filtersSlice'
+import store from '../../store'
 
 const HeroesFilters = () => {
-	const { activeFilter, filters, filtersLoadingStatus } = useSelector(state => state.filters)
+	const { activeFilter, filtersLoadingStatus } = useSelector(state => state.filters)
+	const filters = selectAll(store.getState())
 	const dispatch = useDispatch()
 
-	useEffect(() => {
-		dispatch(fetchFilters())
-		// eslint-disable-next-line
-	}, [])
-
 	if (filtersLoadingStatus === 'loading') {
-		return <Spinner />
+		return null
 	}
 	if (filtersLoadingStatus === 'error') {
 		return <h5 className='text-center mt-5'>Ошибка загрузки</h5>
