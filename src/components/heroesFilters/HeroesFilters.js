@@ -1,17 +1,21 @@
 import classNames from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
-import { setFilter, selectAll } from './filtersSlice'
-import store from '../../store'
+import { setFilter } from './filtersSlice'
+import { useGetFiltersQuery } from '../../api/apiFiltersSlice'
 
 const HeroesFilters = () => {
-	const { activeFilter, filtersLoadingStatus } = useSelector(state => state.filters)
-	const filters = selectAll(store.getState())
+	const { activeFilter } = useSelector(state => state.filters)
+	const {
+		data: filters = [],
+		isFetching,
+		isLoading,
+		isError,
+	} = useGetFiltersQuery()
 	const dispatch = useDispatch()
-
-	if (filtersLoadingStatus === 'loading') {
+	if (isFetching || isLoading) {
 		return null
 	}
-	if (filtersLoadingStatus === 'error') {
+	if (isError) {
 		return <h5 className='text-center mt-5'>Ошибка загрузки</h5>
 	}
 	const renderFilters = () => {

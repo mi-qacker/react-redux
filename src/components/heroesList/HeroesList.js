@@ -1,37 +1,41 @@
-import { useHttp } from '../../hooks/http.hook'
-import { useCallback, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-
+import { useCallback, useMemo } from 'react'
+import { useSelector } from 'react-redux'
 import HeroesListItem from '../heroesListItem/HeroesListItem'
 import Spinner from '../spinner/Spinner'
-import { heroDeleted, fetchHeroes, filteredHeroesSelector } from './heroesSlice'
-import { fetchFilters, selectAll } from '../heroesFilters/filtersSlice'
-import store from '../../store'
+import { useDeleteHeroMutation, useGetHeroesQuery } from '../../api/apiHeroesSlice'
+import { useGetFiltersQuery } from '../../api/apiFiltersSlice'
 
 const HeroesList = () => {
-	const filteredHeroes = useSelector(filteredHeroesSelector)
-	const filters = selectAll(store.getState())
-	const { heroesLoadingStatus } = useSelector(state => state.heroes)
-	const { filtersLoadingStatus } = useSelector(state => state.filters)
+	const {
+		data: heroes = [],
+		isLoading: isHeroesLoading,
+		isError: isHeroesError,
+	} = useGetHeroesQuery()
 
-	const dispatch = useDispatch()
-	const { request } = useHttp()
+	const {
+		data: filters = [],
+		isLoading: isFiltersLoading,
+		isError: isFiltersError,
+	} = useGetFiltersQuery()
 
-	useEffect(() => {
-		dispatch(fetchHeroes())
-		dispatch(fetchFilters())
+	const [deleteHero] = useDeleteHeroMutation()
+
+	const activeFilter = useSelector(state => state.filters.activeFilter)
+
+	const filteredHeroes = useMemo(() => {
+		const filteredHeroes = heroes.slice()
+		return activeFilter === 'all' ? filteredHeroes : filteredHeroes.filter(hero => hero.element === activeFilter)
+	}, [activeFilter, heroes])
+
+
+	const onDeleteHero = useCallback((id) => {
+		deleteHero(id)
 		// eslint-disable-next-line
 	}, [])
 
-	const onDeleteHero = useCallback((id) => {
-		request(`http://localhost:3001/heroes/${id}`, 'DELETE')
-			.then(() => dispatch(heroDeleted(id)))
-		// eslint-disable-next-line
-	}, [request])
-
-	if (heroesLoadingStatus === 'loading' || filtersLoadingStatus === 'loading') {
+	if (isHeroesLoading || isFiltersLoading) {
 		return <Spinner />
-	} else if (heroesLoadingStatus === 'error' || filtersLoadingStatus === 'error') {
+	} else if (isHeroesError || isFiltersError) {
 		return <h5 className='text-center mt-5'>Ошибка загрузки</h5>
 	}
 

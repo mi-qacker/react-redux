@@ -1,16 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux'
 import { useForm } from 'react-hook-form'
-import { useHttp } from '../../hooks/http.hook'
-import { heroCreated } from '../heroesList/heroesSlice'
-import { selectAll } from '../heroesFilters/filtersSlice'
-import store from '../../store'
+import { useCreateHeroMutation } from '../../api/apiHeroesSlice'
+import { useGetFiltersQuery } from '../../api/apiFiltersSlice'
 
 const HeroesAddForm = () => {
-	const filters = selectAll(store.getState())
-	const { filtersLoadingStatus } = useSelector(state => state.filters)
-
-	const dispatch = useDispatch()
-	const { request } = useHttp()
+	const [createHero] = useCreateHeroMutation()
+	const { data: filters = [], isFetching, isLoading, isError } = useGetFiltersQuery()
 	const {
 		register,
 		handleSubmit,
@@ -18,16 +12,16 @@ const HeroesAddForm = () => {
 	} = useForm()
 
 	const onSubmit = (body) => {
-		request('http://localhost:3001/heroes', 'POST', JSON.stringify(body))
-			.then((data) => dispatch(heroCreated(data)))
+		createHero(body).unwrap()
 		resetField('name')
 		resetField('description')
 		resetField('element')
 	}
 
-	if (filtersLoadingStatus === 'loading') {
+	if (isFetching || isLoading) {
 		return null
-	} else if (filtersLoadingStatus === 'error') {
+	}
+	if (isError) {
 		return <h5 className='text-center mt-5'>Ошибка загрузки</h5>
 	}
 
